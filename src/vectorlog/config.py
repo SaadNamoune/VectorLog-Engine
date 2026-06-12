@@ -17,21 +17,34 @@ def _project_path(value: str) -> Path:
 
 @dataclass(frozen=True)
 class Settings:
-    """Configuration centrale du projet.
+    # PostgreSQL / pgvector
+    database_url: str = "postgresql://vectorlog:vectorlog@localhost:5432/vectorlogdb"
 
-    Les valeurs par defaut correspondent au depot livre et peuvent etre
-    surchargees via un fichier .env ou les variables d'environnement.
-    """
+    # OpenSearch
+    opensearch_host: str = "localhost"
+    opensearch_port: int = 9200
+    opensearch_user: str = "admin"
+    opensearch_password: str = "admin"
+    opensearch_index_prefix: str = "vectorlog"
 
-    database_url: str = "postgresql://tp5:tp5pass@localhost:5432/logsdb"
+    # Embedding
     model_name: str = "sentence-transformers/all-MiniLM-L6-v2"
+    embedding_batch_size: int = 128
+    embedding_device: str = "cpu"
+
+    # Search
+    search_top_k: int = 20
+
+    # Log ingestion
     log_year: int = 2024
     raw_log_path: Path = PROJECT_ROOT / "data/raw/OpenSSH/OpenSSH_full.log"
     structured_csv_path: Path = PROJECT_ROOT / "data/raw/OpenSSH/OpenSSH_full.log_structured.csv"
     templates_csv_path: Path = PROJECT_ROOT / "data/raw/OpenSSH/OpenSSH_full.log_templates.csv"
     processed_dir: Path = PROJECT_ROOT / "data/processed"
-    embedding_batch_size: int = 128
-    search_top_k: int = 20
+
+    # Anomaly detection
+    anomaly_contamination: float = 0.05
+    anomaly_n_estimators: int = 100
 
     @property
     def log_entries_csv_dir(self) -> Path:
@@ -49,12 +62,19 @@ class Settings:
 def load_settings(env_file: str | Path | None = None) -> Settings:
     if env_file is None:
         env_file = PROJECT_ROOT / ".env"
-
     load_dotenv(env_file)
 
     return Settings(
         database_url=os.getenv("DATABASE_URL", Settings.database_url),
+        opensearch_host=os.getenv("OPENSEARCH_HOST", Settings.opensearch_host),
+        opensearch_port=int(os.getenv("OPENSEARCH_PORT", str(Settings.opensearch_port))),
+        opensearch_user=os.getenv("OPENSEARCH_USER", Settings.opensearch_user),
+        opensearch_password=os.getenv("OPENSEARCH_PASSWORD", Settings.opensearch_password),
+        opensearch_index_prefix=os.getenv("OPENSEARCH_INDEX_PREFIX", Settings.opensearch_index_prefix),
         model_name=os.getenv("MODEL_NAME", Settings.model_name),
+        embedding_batch_size=int(os.getenv("EMBEDDING_BATCH_SIZE", str(Settings.embedding_batch_size))),
+        embedding_device=os.getenv("EMBEDDING_DEVICE", Settings.embedding_device),
+        search_top_k=int(os.getenv("SEARCH_TOP_K", str(Settings.search_top_k))),
         log_year=int(os.getenv("LOG_YEAR", str(Settings.log_year))),
         raw_log_path=_project_path(os.getenv("RAW_LOG_PATH", "data/raw/OpenSSH/OpenSSH_full.log")),
         structured_csv_path=_project_path(
@@ -64,6 +84,6 @@ def load_settings(env_file: str | Path | None = None) -> Settings:
             os.getenv("TEMPLATES_CSV_PATH", "data/raw/OpenSSH/OpenSSH_full.log_templates.csv")
         ),
         processed_dir=_project_path(os.getenv("PROCESSED_DIR", "data/processed")),
-        embedding_batch_size=int(os.getenv("EMBEDDING_BATCH_SIZE", str(Settings.embedding_batch_size))),
-        search_top_k=int(os.getenv("SEARCH_TOP_K", str(Settings.search_top_k))),
+        anomaly_contamination=float(os.getenv("ANOMALY_CONTAMINATION", str(Settings.anomaly_contamination))),
+        anomaly_n_estimators=int(os.getenv("ANOMALY_N_ESTIMATORS", str(Settings.anomaly_n_estimators))),
     )
