@@ -1,0 +1,53 @@
+# Data — never commit raw/processed log files
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/archives/
+!data/archives/OpenSSH.zip
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+.env
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Reports — compiled PDFs go in CI artifacts
+reports/*.aux
+reports/*.fdb_latexmk
+reports/*.fls
+reports/*.log
+reports/*.out
+reports/*.toc
+reports/*.synctex.gz
+reports/*.pdf
+
+# Logs & runtime
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker volumes
+.docker/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
