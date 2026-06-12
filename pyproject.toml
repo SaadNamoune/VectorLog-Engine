@@ -1,0 +1,64 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vectorlog-engine"
+version = "2.0.0"
+description = "Semantic log analytics engine — vector search, anomaly detection, and OpenSearch integration over massive log datasets."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [
+  { name = "Saad Namoune", email = "saad.namoune28@gmail.com" }
+]
+keywords = ["logs", "semantic-search", "opensearch", "pgvector", "anomaly-detection", "siem", "security"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: System :: Logging",
+]
+dependencies = [
+  "pyspark>=3.5",
+  "sentence-transformers>=3.0",
+  "psycopg[binary,pool]>=3.2",
+  "pgvector>=0.3",
+  "pandas>=2.2",
+  "numpy>=1.26",
+  "scikit-learn>=1.4",
+  "tqdm>=4.66",
+  "python-dotenv>=1.0",
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.30",
+  "streamlit>=1.37",
+  "plotly>=5.23",
+  "opensearch-py>=2.4",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "httpx>=0.27", "jupyter>=1.0", "ipykernel>=6.29", "ruff>=0.4"]
+gpu = ["torch>=2.0"]
+
+[project.scripts]
+vectorlog = "vectorlog.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/SaadNamoune/VectorLog-Engine"
+Repository = "https://github.com/SaadNamoune/VectorLog-Engine"
+Issues = "https://github.com/SaadNamoune/VectorLog-Engine/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
