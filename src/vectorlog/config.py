@@ -46,6 +46,13 @@ class Settings:
     anomaly_contamination: float = 0.05
     anomaly_n_estimators: int = 100
 
+    # Alerting
+    alert_smtp_host: str = ""
+    alert_smtp_port: int = 587
+    alert_from_email: str = ""
+    alert_to_email: str = ""
+    alert_severity_threshold: str = "high"
+
     @property
     def log_entries_csv_dir(self) -> Path:
         return self.processed_dir / "log_entries_csv"
@@ -86,4 +93,9 @@ def load_settings(env_file: str | Path | None = None) -> Settings:
         processed_dir=_project_path(os.getenv("PROCESSED_DIR", "data/processed")),
         anomaly_contamination=float(os.getenv("ANOMALY_CONTAMINATION", str(Settings.anomaly_contamination))),
         anomaly_n_estimators=int(os.getenv("ANOMALY_N_ESTIMATORS", str(Settings.anomaly_n_estimators))),
+        alert_smtp_host=os.getenv("ALERT_SMTP_HOST", Settings.alert_smtp_host),
+        alert_smtp_port=int(os.getenv("ALERT_SMTP_PORT", str(Settings.alert_smtp_port))),
+        alert_from_email=os.getenv("ALERT_FROM_EMAIL", Settings.alert_from_email),
+        alert_to_email=os.getenv("ALERT_TO_EMAIL", Settings.alert_to_email),
+        alert_severity_threshold=os.getenv("ALERT_SEVERITY_THRESHOLD", Settings.alert_severity_threshold),
     )
